@@ -5,6 +5,7 @@ use std::fs::{self, File};
 use std::io::{BufReader, BufWriter, Read, Write};
 use std::path::{Component, Path, PathBuf};
 use std::process::{Command, Stdio};
+use unicode_width::UnicodeWidthStr;
 
 #[derive(Debug)]
 pub struct App {
@@ -68,12 +69,24 @@ impl App {
 
     pub fn status(&self) {
         let map = self.file_mappings.as_map();
+        let max_key_len = map.keys().map(|s| s.width()).max().unwrap_or(0);
+        let max_value_len = map.values().map(|s| s.width()).max().unwrap_or(0);
+        let counter_len = map.len().to_string().len();
         println!("There are {} mapped files.", map.len());
-        println!("===========================");
+        let header_footer = (0..(counter_len + max_key_len + max_value_len + 6)).map(|s| "=").collect::<Vec<&str>>().join("");
+        println!("{}", header_footer);
         for (counter, (dest, src)) in map.iter().enumerate() {
-            println!("{}. {} -> {}", counter + 1, dest, src);
+            println!(
+                "{:counter_len$}. {:key_len$} -> {:value_len$}",
+                counter + 1,
+                dest,
+                src,
+                counter_len = counter_len,
+                key_len = max_key_len,
+                value_len = max_value_len
+            );
         }
-        println!("===========================");
+        println!("{}", header_footer);
     }
 
     pub fn link<P: AsRef<Path>>(&mut self, source: P, dest: &str) {
