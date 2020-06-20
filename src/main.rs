@@ -8,8 +8,8 @@ extern crate clap;
 mod app;
 
 use app::App;
-use std::vec::Vec;
 use clap::{App as ClapApp, AppSettings, Arg, SubCommand};
+use std::vec::Vec;
 
 fn main() {
     pretty_env_logger::init();
@@ -36,12 +36,8 @@ fn main() {
     };
     let mut app = App::new().unwrap();
     match sub_name {
-        "status" => {
-            app.status();
-        }
-        "restore" => {
-            app.restore();
-        }
+        "status" => app.status(),
+        "restore" => app.restore(),
         "git" => {
             let sub_m = m.subcommand().1.unwrap();
             app.git(&sub_m.values_of_lossy("args").unwrap_or_else(Vec::new));
@@ -57,8 +53,6 @@ fn main() {
                 sub_m.value_of("dest").unwrap(),
             );
         }
-        _ => {
-            unimplemented!();
-        }
+        _ => unimplemented!(),
     }
 }
