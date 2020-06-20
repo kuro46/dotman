@@ -17,7 +17,7 @@ impl App {
     pub fn new() -> Result<Self> {
         let mut workspace =
             dirs::home_dir().ok_or_else(|| anyhow!("Cannot retrieve home directory"))?;
-        workspace.push(".dotfiles");
+        workspace.push("dotfiles");
         debug!("Workspace: {}", workspace.to_string_lossy());
         if !workspace.exists() {
             debug!("Creating workspace: {}", workspace.to_string_lossy());
