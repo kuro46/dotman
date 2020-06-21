@@ -264,17 +264,6 @@ impl FileMappings {
         Ok(())
     }
 
-    pub fn get<P: AsRef<Path>>(&self, src: P) -> Result<PathBuf> {
-        let dst = self
-            .entries
-            .get(&src.as_ref().to_string_lossy().to_string())
-            .ok_or_else(|| anyhow!("Source file is not mapped"))?;
-        let mut buf = PathBuf::new();
-        buf.push(&self.workspace);
-        buf.push(dst);
-        Ok(buf)
-    }
-
     pub fn contains<P: AsRef<Path>>(&self, src: P) -> bool {
         self.entries.contains_key(&Self::strip_src(&src.as_ref()))
     }
