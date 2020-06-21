@@ -30,12 +30,8 @@ fn main() {
                 .arg(Arg::with_name("dest")),
         )
         .get_matches();
-    let sub_name = match m.subcommand_name() {
-        Some(sub_name) => sub_name,
-        None => return,
-    };
     let mut app = App::new().unwrap();
-    match sub_name {
+    match m.subcommand_name().unwrap_or_else(|| "status") {
         "status" => app.status(),
         "restore" => app.restore(),
         "git" => {
