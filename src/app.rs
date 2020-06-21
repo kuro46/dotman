@@ -16,22 +16,21 @@ pub struct App {
 
 impl App {
     pub fn new() -> Result<Self> {
-        let mut workspace =
-            dirs::home_dir().ok_or_else(|| anyhow!("Cannot retrieve home directory"))?;
-        workspace.push("dotfiles");
+        let workspace =
+            dirs::home_dir().ok_or_else(|| anyhow!("Cannot retrieve home directory"))?
+            .join("dotfiles");
         debug!("Workspace: {}", workspace.to_string_lossy());
         if !workspace.exists() {
             debug!("Creating workspace: {}", workspace.to_string_lossy());
             std::fs::create_dir_all(&workspace)?;
         }
-        let mut file_mappings_path = workspace.clone();
-        file_mappings_path.push(".file_mappings.json");
+        let file_mappings_path = workspace.join(".file_mappings.json");
         let file_mappings = {
             if !file_mappings_path.exists() {
-                FileMappings::new(workspace.clone())
+                FileMappings::new(&workspace)
             } else {
                 FileMappings::load_entries(
-                    workspace.clone(),
+                    &workspace,
                     BufReader::new(File::open(&file_mappings_path)?),
                 )?
             }
@@ -243,10 +242,10 @@ struct FileMappings {
 }
 
 impl FileMappings {
-    pub fn new(workspace: PathBuf) -> Self {
+    pub fn new<P: AsRef<Path>>(workspace: P) -> Self {
         Self {
             entries: BTreeMap::new(),
-            workspace,
+            workspace: workspace.as_ref().to_path_buf(),
         }
     }
 
@@ -254,9 +253,9 @@ impl FileMappings {
         &self.entries
     }
 
-    pub fn load_entries<R: Read>(workspace: PathBuf, entries_store: R) -> Result<Self> {
+    pub fn load_entries<R: Read, P: AsRef<Path>>(workspace: P, entries_store: R) -> Result<Self> {
         let entries: BTreeMap<String, String> = serde_json::from_reader(entries_store)?;
-        Ok(Self { entries, workspace })
+        Ok(Self { entries, workspace: workspace.as_ref().to_path_buf() })
     }
 
     pub fn save_entries<W: Write>(&self, entries_store: &mut W) -> Result<()> {
