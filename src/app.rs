@@ -16,8 +16,8 @@ pub struct App {
 
 impl App {
     pub fn new() -> Result<Self> {
-        let workspace =
-            dirs::home_dir().ok_or_else(|| anyhow!("Cannot retrieve home directory"))?
+        let workspace = dirs::home_dir()
+            .ok_or_else(|| anyhow!("Cannot retrieve home directory"))?
             .join("dotfiles");
         debug!("Workspace: {}", workspace.to_string_lossy());
         if !workspace.exists() {
@@ -75,7 +75,10 @@ impl App {
         let max_value_len = map.values().map(|s| s.width()).max().unwrap_or(0);
         let counter_len = map.len().to_string().len();
         println!("There are {} mapped files.", map.len());
-        let header_footer = (0..(counter_len + max_key_len + max_value_len + 6)).map(|s| "=").collect::<Vec<&str>>().join("");
+        let header_footer = (0..(counter_len + max_key_len + max_value_len + 6))
+            .map(|_| "=")
+            .collect::<Vec<&str>>()
+            .join("");
         println!("{}", header_footer);
         for (counter, (dest, src)) in map.iter().enumerate() {
             println!(
@@ -258,7 +261,10 @@ impl FileMappings {
 
     pub fn load_entries<R: Read, P: AsRef<Path>>(workspace: P, entries_store: R) -> Result<Self> {
         let entries: BTreeMap<String, String> = serde_json::from_reader(entries_store)?;
-        Ok(Self { entries, workspace: workspace.as_ref().to_path_buf() })
+        Ok(Self {
+            entries,
+            workspace: workspace.as_ref().to_path_buf(),
+        })
     }
 
     pub fn save_entries<W: Write>(&self, entries_store: &mut W) -> Result<()> {
