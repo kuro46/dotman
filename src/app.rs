@@ -58,9 +58,12 @@ impl App {
                 return;
             }
         };
+        if status.success() {
+            return;
+        }
         println!();
         if let Some(code) = status.code() {
-            println!("Process exited with code {}", code);
+            println!("Process exited abnormally. Exited with code {}", code);
         } else {
             println!("Process terminated by signal");
         }
