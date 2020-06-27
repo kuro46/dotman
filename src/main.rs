@@ -16,17 +16,23 @@ fn main() {
     let m = ClapApp::new("dotman")
         .author(crate_authors!())
         .version(crate_version!())
-        .subcommand(SubCommand::with_name("mappings"))
-        .subcommand(SubCommand::with_name("status"))
-        .subcommand(SubCommand::with_name("restore"))
+        .subcommand(SubCommand::with_name("mappings").about("Prints list of mappings"))
+        .subcommand(
+            SubCommand::with_name("status").about("Executes 'git status' in dotfiles folder"),
+        )
+        .subcommand(SubCommand::with_name("restore").about("Not implemented now"))
         .subcommand(
             SubCommand::with_name("git")
+                .about("Executes any subcommands of git in dotfiles folder")
                 .setting(AppSettings::TrailingVarArg)
                 .arg(Arg::with_name("args").required(false).multiple(true)),
         )
-        .subcommand(SubCommand::with_name("unlink").arg(Arg::with_name("source")))
+        .subcommand(SubCommand::with_name("unlink")
+            .about("Unlink mapped file")
+            .arg(Arg::with_name("source")))
         .subcommand(
             SubCommand::with_name("link")
+                .about("Link specified file")
                 .arg(Arg::with_name("source"))
                 .arg(Arg::with_name("dest")),
         )
