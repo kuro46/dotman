@@ -69,7 +69,7 @@ impl App {
         }
     }
 
-    pub fn status(&self) {
+    pub fn mappings(&self) {
         let map = self.file_mappings.as_map();
         let max_key_len = map.keys().map(|s| s.width()).max().unwrap_or(0);
         let max_value_len = map.values().map(|s| s.width()).max().unwrap_or(0);
