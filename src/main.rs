@@ -49,6 +49,6 @@ fn main() {
                 sub_m.value_of("dest").unwrap(),
             );
         }
-        _ => unimplemented!(),
+        unknown => panic!("'{}' IS UNKNOWN SUBCOMMAND!", unknown),
     }
 }
