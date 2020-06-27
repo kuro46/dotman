@@ -17,6 +17,7 @@ fn main() {
         .author(crate_authors!())
         .version(crate_version!())
         .subcommand(SubCommand::with_name("mappings"))
+        .subcommand(SubCommand::with_name("status"))
         .subcommand(SubCommand::with_name("restore"))
         .subcommand(
             SubCommand::with_name("git")
@@ -31,8 +32,9 @@ fn main() {
         )
         .get_matches();
     let mut app = App::new().unwrap();
-    match m.subcommand_name().unwrap_or_else(|| "mappings") {
+    match m.subcommand_name().unwrap_or_else(|| "status") {
         "mappings" => app.mappings(),
+        "status" => app.status(),
         "restore" => app.restore(),
         "git" => {
             let sub_m = m.subcommand().1.unwrap();

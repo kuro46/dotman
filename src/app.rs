@@ -94,6 +94,10 @@ impl App {
         println!("{}", header_footer);
     }
 
+    pub fn status(&self) {
+        self.git(&["status".to_string()]);
+    }
+
     pub fn link<P: AsRef<Path>>(&mut self, source: P, dest: &str) {
         let source = source.as_ref();
         if !source.exists() {
